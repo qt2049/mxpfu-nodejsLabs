@@ -36,8 +36,37 @@ router.get("/:email",(req,res)=>{
 
 // POST request: Create a new user
 router.post("/",(req,res)=>{
-  // Copy the code here
-  res.send("Yet to be implemented")//This line is to be replaced with actual return value
+  let firstName = req.query.firstName;
+  let lastName = req.query.lastName;
+  let email = req.query.email;
+  let dob = req.query.DOB;
+  if (firstName == null) {
+    res.status(400).send("firstName shall be defined!")
+    return;
+  }
+  if (lastName == null) {
+    res.status(400).send("lastName shall be defined!")
+    return;
+  }
+  if (email == null) {
+    res.status(400).send("email shall be defined!")
+    return;
+  }
+  if (dob == null) {
+    res.status(400).send("dob shall be defined!")
+    return;
+  }
+  if (users.filter(item => item.email === req.query.email).length > 0) {
+    res.status(500).send("user already defined!")
+    return;
+  }
+  users.push({
+    "firstName": firstName,
+    "lastName": lastName,
+    "email": email,
+    "DOB": dob
+  });
+  res.status(204).send("user added!");
 });
 
 
