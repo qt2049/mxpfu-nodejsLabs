@@ -78,6 +78,7 @@ router.put("/:email", (req, res) => {
     let filtered_users = users.filter((user) => user.email === email);
     
     if (filtered_users.length > 0) {
+        let updatesCount = 0
         // Select the first matching user and update attributes if provided
         let filtered_user = filtered_users[0];
         
@@ -86,6 +87,7 @@ router.put("/:email", (req, res) => {
         let DOB = req.query.DOB;    
         if (DOB) {
             filtered_user.DOB = DOB;
+            updatesCount++;
         }
         
         /*
@@ -95,19 +97,25 @@ router.put("/:email", (req, res) => {
         let firstName = req.query.firstName;
         if (firstName) {
             filtered_user.firstName = firstName;
+            updatesCount++;
         }
         // Extract and update lastName if provided
         let lastName = req.query.lastName;
         if (lastName) {
             filtered_user.lastName = lastName;
+            updatesCount++;
         }
         
-        // Replace old user entry with updated user
-        users = users.filter((user) => user.email != email);
-        users.push(filtered_user);
-        
-        // Send success message indicating the user has been updated
-        res.send(`User with the email ${email} updated.`);
+        if (updatesCount > 0) {
+            // Replace old user entry with updated user
+            users = users.filter((user) => user.email != email);
+            users.push(filtered_user);
+            
+            // Send success message indicating the user has been updated
+            res.send(`User with the email ${email} updated.`);
+        } else {
+            res.send(`Nothing to update for user ${email}.`);
+        }
     } else {
         // Send error message if no user found
         res.send("Unable to find user!");
